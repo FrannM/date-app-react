@@ -1,4 +1,8 @@
-function Header() {
+function Header({ take1Value }) {
+	const headerVariable = true;
+
+	take1Value(headerVariable);
+
 	return (
 		<>
 			<h1 className="font-black text-5xl text-center md:w-2/3 mx-auto">
