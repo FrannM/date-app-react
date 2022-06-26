@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import Error from "./Error";
 
-const Form = () => {
+const Form = ({ setPatients, patients }) => {
 	const [name, setName] = useState("");
 	const [owner, setOwner] = useState("");
 	const [email, setEmail] = useState("");
@@ -18,27 +19,49 @@ const Form = () => {
 			return;
 		}
 
+		// Patient Object
+		const objectPatient = {
+			name,
+			owner,
+			email,
+			dischargeDate,
+			symptoms,
+		};
+
+		setPatients([...patients, objectPatient]);
+
+		// Reset Form
+		setName("");
+		setOwner("");
+		setEmail("");
+		setDischargeDate("");
+		setSymptoms("");
+
+		// Scroll to top
+		window.scrollTo(0, 0);
+
+		// Set error to false
 		setError(false);
 	};
 
 	return (
 		<div className="md:w-1/2 lg:w-2/5 mx-5">
 			<h2 className="font-black text-3xl text-center">Patient Monitoring</h2>
-			<p className="text-lg mt-5 text-center mb-10">
+			<h1 className="text-lg mt-5 text-center mb-10">
 				Add Patients and {""}
 				<span className="text-indigo-600 font-bold">Manage them</span>
-			</p>
+			</h1>
 			<form
 				onSubmit={handleSubmit}
 				className="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
 			>
-				<p>
+				<h1>
 					{error && (
-						<div className="bg-red-800 text-white text-center p-3  uppercase font-bold mb-3 rounded-md">
+						<Error>
 							<p>Please fill all the fields</p>
-						</div>
+						</Error>
 					)}
-				</p>
+				</h1>
 				<div className="mb-5">
 					<label
 						htmlFor="petName"
