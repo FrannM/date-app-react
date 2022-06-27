@@ -1,31 +1,46 @@
 import { useState, useEffect } from "react";
 import Error from "./Error";
 
-const Form = ({ setPatients, patients }) => {
+const Form = ({ setPatients, patients, patient }) => {
 	const [name, setName] = useState("");
 	const [owner, setOwner] = useState("");
 	const [email, setEmail] = useState("");
-	const [dischargeDate, setDischargeDate] = useState("");
+	const [Date, setDate] = useState("");
 	const [symptoms, setSymptoms] = useState("");
 
 	const [error, setError] = useState(false);
+
+	useEffect(() => {
+		if (Object.keys(patient).length > 0) {
+			setName(patient.name);
+			setOwner(patient.owner);
+			setEmail(patient.email);
+			setDate(patient.Date);
+			setSymptoms(patient.symptoms);
+		}
+	}, [patient]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
 		// Form Validation
-		if ([name, owner, email, dischargeDate, symptoms].includes("")) {
+		if ([name, owner, email, Date, symptoms].includes("")) {
 			setError(true);
 			return;
 		}
+
+		const generateId = () => {
+			return Math.random().toString(36).substr(2, 9);
+		};
 
 		// Patient Object
 		const objectPatient = {
 			name,
 			owner,
 			email,
-			dischargeDate,
+			Date,
 			symptoms,
+			id: generateId(),
 		};
 
 		setPatients([...patients, objectPatient]);
@@ -34,7 +49,7 @@ const Form = ({ setPatients, patients }) => {
 		setName("");
 		setOwner("");
 		setEmail("");
-		setDischargeDate("");
+		setDate("");
 		setSymptoms("");
 
 		// Scroll to top
@@ -112,17 +127,17 @@ const Form = ({ setPatients, patients }) => {
 				</div>
 				<div className="mb-5">
 					<label
-						htmlFor="dischargeDate"
+						htmlFor="Date"
 						className="block text-gray-700 uppercase font-bold"
 					>
-						Discharge Date
+						Date
 					</label>
 					<input
-						id="dischargeDate"
+						id="Date"
 						type="date"
 						className="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
-						value={dischargeDate}
-						onChange={(e) => setDischargeDate(e.target.value)}
+						value={Date}
+						onChange={(e) => setDate(e.target.value)}
 					/>
 				</div>
 				<div className="mb-5">
