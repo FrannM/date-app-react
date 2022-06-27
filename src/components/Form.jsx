@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Error from "./Error";
 
-const Form = ({ setPatients, patients, patient }) => {
+const Form = ({ setPatients, patients, patient, setPatient }) => {
 	const [name, setName] = useState("");
 	const [owner, setOwner] = useState("");
 	const [email, setEmail] = useState("");
@@ -20,6 +20,21 @@ const Form = ({ setPatients, patients, patient }) => {
 		}
 	}, [patient]);
 
+	// clear form
+	const clearForm = () => {
+		setName("");
+		setOwner("");
+		setEmail("");
+		setDate("");
+		setSymptoms("");
+		setError(false);
+	};
+
+	// generate random id
+	const generateId = () => {
+		return Math.random().toString(36).substring(2, 15).toUpperCase();
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -29,10 +44,6 @@ const Form = ({ setPatients, patients, patient }) => {
 			return;
 		}
 
-		const generateId = () => {
-			return Math.random().toString(36).substr(2, 9);
-		};
-
 		// Patient Object
 		const objectPatient = {
 			name,
@@ -40,23 +51,25 @@ const Form = ({ setPatients, patients, patient }) => {
 			email,
 			Date,
 			symptoms,
-			id: generateId(),
 		};
 
-		setPatients([...patients, objectPatient]);
+		if (patient.id) {
+			// Editing Patient
+			objectPatient.id = patient.id;
+			setPatients(
+				patients.map((patientState) =>
+					patientState.id === objectPatient.id ? objectPatient : patientState
+				)
+			);
+			setPatient({});
+		} else {
+			// Adding Patient
+			objectPatient.id = generateId();
+			setPatients([...patients, objectPatient]);
+		}
 
 		// Reset Form
-		setName("");
-		setOwner("");
-		setEmail("");
-		setDate("");
-		setSymptoms("");
-
-		// Scroll to top
-		window.scrollTo(0, 0);
-
-		// Set error to false
-		setError(false);
+		clearForm();
 	};
 
 	return (
@@ -155,11 +168,20 @@ const Form = ({ setPatients, patients, patient }) => {
 						onChange={(e) => setSymptoms(e.target.value)}
 					/>
 				</div>
-				<input
-					type="submit"
-					className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
-					value="Add Pacient"
-				/>
+				<div className="py-3">
+					<input
+						type="submit"
+						className="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
+						value={patient.id ? "Update Patient" : "Add Patient"}
+					/>
+					<input
+						className="bg-slate-500 w-full p-3 mt-3 text-white uppercase font-bold
+					hover:bg-slate-700 cursor-pointer transition-colors"
+						type="button"
+						onClick={clearForm}
+						value="Clear Form"
+					/>
+				</div>
 			</form>
 		</div>
 	);
